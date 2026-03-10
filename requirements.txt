@@ -1,0 +1,33 @@
+webdriver-manager==4.0.2
+selenium==4.40.0
+python-dotenv
+pytest== 9.0.2
+playwright==1.58.0
+faker==40.4.0
+pytest-repeat==0.9.4
+pytest-cases==3.9.1
+pytest-variables==3.1.0
+pytest-xdist==3.8.0
+pytest-randomly==4.0.1
+pytest-dotenv==0.5.2
+pytest-sugar==1.1.1
+pytest-base-url==2.1.0
+pytest-bdd==8.1.0
+pytest-rerunfailures==16.1
+pytest-selenium==4.1.0
+requests==2.32.5
+pytest-clarity==1.0.1
+pytest_check==2.6.2
+
+fastapi==0.129.0
+
+# Testing
+
+allure-pytest==2.15.3
+Pillow>=11.1.0
+
+# dev
+black== 26.1.0
+flake8==7.3.0
+isort==7.0.0
+pre-commit==4.5.1
