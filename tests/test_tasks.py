@@ -19,7 +19,7 @@ def tasks_open_logged_in(driver):  #Метод открытия страницы
     return tasks_page
 
 @allure.sub_suite('Проверка наличия досок у пользователя')
-@pytest.mark.onlytasks
+#@pytest.mark.onlytasks
 def test_user_have_tasks(driver):
     tasks_page = tasks_open_logged_in(driver)
     tasks_page.assert_user_have_tasks()
