@@ -18,8 +18,7 @@ def board_open_logged_in(driver):  #Метод открытия страницы
     board_page.assert_that_boards_opened()
     return board_page
 
-@allure.sub_suite('Проверка наличия досок у пользователя')
-@pytest.mark.onlyboard
+@allure.step('Проверка наличия досок у пользователя')
 def test_board_opened(driver):
     board_page = board_open_logged_in(driver)
     board_page.assert_test_user_have_board()

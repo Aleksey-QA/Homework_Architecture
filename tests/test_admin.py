@@ -16,24 +16,24 @@ def admin_open_logged_in(driver):  #Метод открытия страницы
     admin_page.assert_that_admin_opened()
     return admin_page
 
-@allure.sub_suite('Проверка на отображение Admin страницы') #не отображается в allure
+@allure.step('Проверка на отображение Admin страницы') #не отображается в allure
 def test_admin_opened(driver):
     admin_page = admin_open_logged_in(driver)
     admin_page.assert_that_admin_opened()
 
-@allure.sub_suite('Проверка на отображение зарегистрированных пользователей')
+@allure.step('Проверка на отображение зарегистрированных пользователей')
 def test_admin_opened(driver):
     admin_page = admin_open_logged_in(driver)
     admin_page.assert_that_admin_opened()
     admin_page.assert_admin_reg_user()
 
-@allure.sub_suite('Проверка входа под админом и поиск юзеров')
+@allure.step('Проверка входа под админом и поиск юзеров')
 def test_admin_find_of_user(driver):
     admin_page = admin_open_logged_in(driver)
     admin_page.assert_that_admin_opened()
     admin_page.assert_admin_find_of_user()
 
-@allure.sub_suite('Проверка разлогина и отсутствия доступа к админке у юзеров')
+@allure.step('Проверка разлогина и отсутствия доступа к админке у юзеров')
 def test_admin_log_out(driver):
     login_page = LoginPage(driver)
     login_page.open()
