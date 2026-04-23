@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 
 class BoardsPage(BasePage):
+    """Класс для работы со страницей управления досками."""
     BOARDS_H1 = (By.CSS_SELECTOR, '[data-qa="boards-page-title"]')
     BOARDS_CREATE_BUTTON = ("xpath", "//button[@class='btn btn-primary btn-md']")
     BOARDS_TABLES = ("xpath", "//div/div/table/thead/tr/th[text()='Название']")
@@ -37,6 +38,3 @@ class BoardsPage(BasePage):
         text = boards_element.text  # "Доски (13)"
         number = text.split('(')[1].split(')')[0]  # "13"
         return int(number)
-
-
-

@@ -1,3 +1,4 @@
+"""Тесты для API статистики администратора (все задачи)."""
 import allure
 import pytest
 
@@ -15,7 +16,8 @@ def statistics_service():
 @allure.step('Проверка получения ожидаемого массива объектов по запросу get_all_tasks_admin')
 def test_assert_success_response(auth_service, statistics_service):
     token = auth_service.get_token_for_me("admin@example.com", "admin123")
-    response = statistics_service.get_all_tasks_admin({"skip": 0, "limit": 100, "status": None, "priority": None}, token)
+    response = statistics_service.get_all_tasks_admin(
+        {"skip": 0, "limit": 100, "status": None, "priority": None}, token)
     body = response.json()
 
     if isinstance(body, dict):
@@ -24,25 +26,27 @@ def test_assert_success_response(auth_service, statistics_service):
     elif isinstance(body, list):
         assert all(isinstance(item, dict) for item in body), "Ожидаемый массив объектов tasks"
     else:
-        pytest.fail("Что-то пошло не так: %r" % body)
+        pytest.fail(f"Что-то пошло не так: {body}")
 
 
 @allure.step('Проверка, что с пустыми значениями запрос выполняется успешно по запросу get_all_tasks_admin')
 def test_get_without_parameters(auth_service, statistics_service):
     token = auth_service.get_token_for_me("admin@example.com", "admin123")
-    response = statistics_service.get_all_tasks_admin({"skip": None, "limit": None, "status": None, "priority": None}, token)
+    response = statistics_service.get_all_tasks_admin(
+        {"skip": None, "limit": None, "status": None, "priority": None}, token)
     body = response.json()
 
     if isinstance(body, dict):
         assert "tasks" in body and isinstance(body["tasks"], list), "Ожидаемый 'tasks' отсутствует в тексте ответа"
         assert "total" in body and isinstance(body["total"], int), "Ожидаемый 'total' отсутствует в тексте ответа"
     else:
-        pytest.fail("Что-то пошло не так: %r" % body)
+        pytest.fail(f"Что-то пошло не так: {body}")
 
 @allure.step('Проверка, что с фильтрация по статусу "in_progress" отрабатывают корректно')
 def test_all_tasks_filter_status_in_progress(auth_service, statistics_service):
     token = auth_service.get_token_for_me("admin@example.com", "admin123")
-    response = statistics_service.get_all_tasks_admin({"skip": 0, "limit": 2000, "status": None, "priority": None}, token)
+    response = statistics_service.get_all_tasks_admin(
+        {"skip": 0, "limit": 2000, "status": None, "priority": None}, token)
     body_all_status = response.json()
     # Подсчет задач со статусом "in_progress" без фильтров
     tasks = body_all_status["tasks"]
@@ -61,7 +65,8 @@ def test_all_tasks_filter_status_in_progress(auth_service, statistics_service):
 @allure.step('Проверка, что с фильтрация по статусу "todo" отрабатывают корректно')
 def test_all_tasks_filter_status_todo(auth_service, statistics_service):
     token = auth_service.get_token_for_me("admin@example.com", "admin123")
-    response = statistics_service.get_all_tasks_admin({"skip": 0, "limit": 2000, "status": None, "priority": None}, token)
+    response = statistics_service.get_all_tasks_admin(
+        {"skip": 0, "limit": 2000, "status": None, "priority": None}, token)
     body_all_status = response.json()
     # Подсчет задач со статусом "todo" без фильтров
     tasks = body_all_status["tasks"]
@@ -80,7 +85,8 @@ def test_all_tasks_filter_status_todo(auth_service, statistics_service):
 @allure.step('Проверка, что с фильтрация по статусу "done" отрабатывают корректно')
 def test_all_tasks_filter_status_done(auth_service, statistics_service):
     token = auth_service.get_token_for_me("admin@example.com", "admin123")
-    response = statistics_service.get_all_tasks_admin({"skip": 0, "limit": 2000, "status": None, "priority": None}, token)
+    response = statistics_service.get_all_tasks_admin(
+        {"skip": 0, "limit": 2000, "status": None, "priority": None}, token)
     body_all_status = response.json()
     # Подсчет задач со статусом "done" без фильтров
     tasks = body_all_status["tasks"]
@@ -98,7 +104,8 @@ def test_all_tasks_filter_status_done(auth_service, statistics_service):
 @allure.step('Проверка, что с фильтрация по приоритету "low" отрабатывают корректно')
 def test_all_tasks_filter_priority_low(auth_service, statistics_service):
     token = auth_service.get_token_for_me("admin@example.com", "admin123")
-    response = statistics_service.get_all_tasks_admin({"skip": 0, "limit": 2000, "status": None, "priority": None},
+    response = statistics_service.get_all_tasks_admin(
+        {"skip": 0, "limit": 2000, "status": None, "priority": None},
                                                       token)
     body_all_status = response.json()
     # Подсчет задач с приоритетом "low" без фильтров
@@ -118,7 +125,8 @@ def test_all_tasks_filter_priority_low(auth_service, statistics_service):
 @allure.step('Проверка, что с фильтрация по приоритету "medium" отрабатывают корректно')
 def test_all_tasks_filter_priority_medium(auth_service, statistics_service):
     token = auth_service.get_token_for_me("admin@example.com", "admin123")
-    response = statistics_service.get_all_tasks_admin({"skip": 0, "limit": 2000, "status": None, "priority": None}, token)
+    response = statistics_service.get_all_tasks_admin(
+        {"skip": 0, "limit": 2000, "status": None, "priority": None}, token)
     body_all_status = response.json()
     # Подсчет задач с приоритетом "medium" без фильтров
     tasks = body_all_status["tasks"]
@@ -137,7 +145,8 @@ def test_all_tasks_filter_priority_medium(auth_service, statistics_service):
 @allure.step('Проверка, что с фильтрация по приоритету "high" отрабатывают корректно')
 def test_all_tasks_filter_priority_high(auth_service, statistics_service):
     token = auth_service.get_token_for_me("admin@example.com", "admin123")
-    response = statistics_service.get_all_tasks_admin({"skip": 0, "limit": 2000, "status": None, "priority": None},
+    response = statistics_service.get_all_tasks_admin(
+        {"skip": 0, "limit": 2000, "status": None, "priority": None},
                                                       token)
     body_all_status = response.json()
     # Подсчет задач с приоритетом "high" без фильтров
@@ -164,7 +173,8 @@ def test_all_tasks_filter_priority_high(auth_service, statistics_service):
 ])
 def test_invalid_integer_params_trigger_validation(auth_service, statistics_service, skip, limit, status, priority):
     token = auth_service.get_token_for_me("admin@example.com", "admin123")
-    response = statistics_service.get_all_tasks_admin({"skip": skip, "limit": limit, "status": status, "priority": priority}, token)
+    response = statistics_service.get_all_tasks_admin(
+        {"skip": skip, "limit": limit, "status": status, "priority": priority}, token)
     data = response.json()
 
     # Проверяем наличие detail и что это непустой список
@@ -176,9 +186,6 @@ def test_invalid_integer_params_trigger_validation(auth_service, statistics_serv
     print(data)
     for error in data["detail"]:
         actual_msg = error.get('msg')
-    EXPECTED_MSG = "Input should be a valid integer, unable to parse string as an integer"
-    assert actual_msg == EXPECTED_MSG, f" Параметр 'msg' не совпадает с ожидаемым: Expected: '{EXPECTED_MSG}', Actual: '{actual_msg}'"
-
-
-
-
+    expected_msg = "Input should be a valid integer, unable to parse string as an integer"
+    assert actual_msg == expected_msg, (f" Параметр 'msg' не совпадает с ожидаемым: "
+                                        f"Expected: '{expected_msg}', Actual: '{actual_msg}'")

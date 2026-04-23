@@ -19,7 +19,7 @@ def test_get_all_boards_admin_valid(auth_service, statistics_service):
     response = statistics_service.get_all_boards_admin(params, token)
     body = response.json()
 
-    if isinstance(body, dict):                                            #Почему нет?
+    if isinstance(body, dict):
         assert "boards" in body and isinstance(body["boards"], list), "Ожидаемый 'boards' в тексте ответа"
         assert "total" in body and isinstance(body["total"], int), "Ожидаемый 'total' в тексте ответа"
     elif isinstance(body, list):
@@ -33,10 +33,9 @@ def test_get_without_parameters(auth_service, statistics_service):
     token = auth_service.get_token_for_me("admin@example.com", "admin123")
     params = {"skip": None, "limit": None, "archived": None}
     response = statistics_service.get_all_boards_admin(params, token)
-    body = response.json()
     assert response.status_code == 200, f"Expected 200 OK, got {response.status_code}: {response.text}"
 
-@allure.step('Проверка, отправки запроса получения досок с невалидными параметрами')
+@allure.step('Проверка отправки запроса получения досок с невалидными параметрами')
 @pytest.mark.parametrize("skip, limit, archived", [
     ("abc", None, True),
     (None, "ten", False),
@@ -47,8 +46,8 @@ def test_invalid_integer_params_trigger_validation(auth_service, statistics_serv
     token = auth_service.get_token_for_me("admin@example.com", "admin123")
     response = statistics_service.get_all_boards_admin({"skip": skip, "limit": limit, "archived": archived}, token)
 
-   # response = take_response({"skip": skip, "limit": limit, "archived": archived})
-    assert response.status_code == 422, f" Ожидали получить 422 ошибку, got {response.status_code}: {response.text}"
+    assert response.status_code == 422, (f" Ожидали получить 422 ошибку, "
+                                         f"got {response.status_code}: {response.text}")
     data = response.json()
 
     # Проверяем наличие detail и что это непустой список
@@ -60,5 +59,6 @@ def test_invalid_integer_params_trigger_validation(auth_service, statistics_serv
     print(data)
     for error in data["detail"]:
         actual_msg = error.get('msg')
-    EXPECTED_MSG = "Input should be a valid integer, unable to parse string as an integer"
-    assert actual_msg == EXPECTED_MSG, f" Параметр 'msg' не совпадает с ожидаемым: Expected: '{EXPECTED_MSG}', Actual: '{actual_msg}'"
+    expected_msg  = "Input should be a valid integer, unable to parse string as an integer"
+    assert actual_msg == expected_msg , (f" Параметр 'msg' не совпадает с ожидаемым: "
+                                        f"Expected: '{expected_msg }', Actual: '{actual_msg}'")

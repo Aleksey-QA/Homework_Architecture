@@ -13,6 +13,7 @@ Page Elementary Pattern - базовый класс BasePage содержит о
 - [Запуск первого теста](#запуск-первого-теста)
 - [Запуск тестов с разными ключами](#запуск-первого-теста-с-разными-ключами)
 - [Allure reports](#Allure)
+- [Запуск Pylint](#Запуск_Pylint)
 
 ---
 
@@ -54,3 +55,29 @@ pytest tests/test_api/test_statistics.py -v -s --cache-clear --tb=short  # пр�
 ```bash
 allure serve allure-results
 ```
+
+## Запуск_Pylint
+
+
+Установить pylint (если не установлен)
+```bash
+pip install pylint
+```
+Запустить проверку одного файла
+```bash
+pylint pages/boards_page.py
+```
+Запустить проверку всей папки
+```bash
+pylint pages/
+pylint tests/
+```
+Запустить проверку всех Python файлов в проекте
+```bash
+pylint $(find . -name "*.py" -not -path "./.venv/*")
+```
+Запустить проверку одного Python файла с указанием исключающих ошибок
+```bash
+pylint pages/login_page.py --disable=C0116,C0114  
+```
+

@@ -1,16 +1,16 @@
 import time
-from selenium.webdriver.support import expected_conditions as EC
-
 import allure
 import pytest
+
 from selenium.common import TimeoutException
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 
 from pages.base_page import BasePage
 
-
 class AdminPage(BasePage):
+    """Класс для работы с административной панелью."""
     ADMIN_SEL = ("xpath", "//h1[@class ='admin-page-title']")
     ADMIN_PANEL = ("xpath", "//span[text()='Административная панель']")
     ADMIN_FIND_INPUT = ("xpath", "//input[@id='id-input-undefined']")
@@ -28,14 +28,16 @@ class AdminPage(BasePage):
     @allure.step('Проверка поиска юзеров по name и mail')
     def assert_admin_find_of_user(self):
         self.assert_that_page_opened()
-        INPUT_FIND = self.driver.find_element(*self.ADMIN_FIND_INPUT)
-        SEND_TEXT = "Example"
-        INPUT_FIND.send_keys(SEND_TEXT)
+        input_find = self.driver.find_element(*self.ADMIN_FIND_INPUT)
+        send_text = "Example"
+        input_find.send_keys(send_text)
         time.sleep(1)
 
         # Находим все элементы с классом admin-table-user-name
-        user_name_elements = self.driver.find_elements("xpath", "//div[@class='admin-table-user-name']")
-        user_mail_elements = self.driver.find_elements("xpath", "//div[@class='admin-table-user-email']")
+        user_name_elements = self.driver.find_elements(
+            "xpath", "//div[@class='admin-table-user-name']")
+        user_mail_elements = self.driver.find_elements(
+            "xpath", "//div[@class='admin-table-user-email']")
 
         # Проверяем, что найдены элементы
         assert len(user_name_elements) > 0, "Не найдены элементы admin-table-user-name"
@@ -46,10 +48,11 @@ class AdminPage(BasePage):
                 # Получаем текст и приводим к нижнему регистру
                 text = element.text.strip().lower() + element_2.text.strip().lower()
                 # Проверяем наличие слова SEND_TEXT
-                assert SEND_TEXT.lower() in text, \
-                    print(f"Текст '{text}' не содержит искомое слово {SEND_TEXT}. Поиск не работает'")
+                assert send_text.lower() in text, \
+                    print(f"Текст '{text}' не содержит искомое слово {send_text}. "
+                          f"Поиск не работает'")
 
-        print(f"✓ Проверено {len(user_name_elements)} элементов, все содержат {SEND_TEXT}")
+        print(f"✓ Проверено {len(user_name_elements)} элементов, все содержат {send_text}")
 
 
     @allure.step('Проверка на недоступность админ.прав для обычных пользователей')

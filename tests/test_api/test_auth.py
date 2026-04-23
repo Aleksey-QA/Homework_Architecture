@@ -1,5 +1,3 @@
-import pytest
-
 from services.authentication_service import AuthServices
 
 def test_login():

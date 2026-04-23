@@ -1,5 +1,3 @@
-import time
-
 import allure
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
@@ -7,13 +5,16 @@ from selenium.webdriver.support.wait import WebDriverWait
 from config import BaseConfig
 
 class BasePage:
-
+    """Базовый класс для всех Page Object классов.
+       Содержит общие методы для работы с драйвером и ожиданиями.
+    """
     HOME_PAGE = "http://localhost:3000/"
 
     HOST_BUTTON_LOCATOR = ("xpath", "//button[text()='Host']")
 
     @allure.step('Инициализация страницы')
-    def __init__(self, driver, url, timeout=BaseConfig.WEB_DRIVER_WAIT, title='Task Management Board'):
+    def __init__(self, driver, url, timeout=BaseConfig.WEB_DRIVER_WAIT,
+                 title='Task Management Board'):
         self.driver: WebDriver = driver
         self.url = url
         self.title = title
@@ -40,7 +41,6 @@ class BasePage:
         if is_force:
             self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", el)
             self.driver.execute_script("arguments[0].click();", el)
-
         else:
             el.click()
 
@@ -58,5 +58,6 @@ class BasePage:
     def assert_that_page_opened(self):
         self.wait_page_opened()
 
-        assert self.url in self.driver.current_url, f"Expected: {self.url}, but {self.driver.current_url}"
+        assert self.url in self.driver.current_url, (f"Expected: {self.url}, "
+                                                     f"but {self.driver.current_url}")
         assert self.title == self.driver.title

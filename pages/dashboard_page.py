@@ -6,6 +6,7 @@ from pages.base_page import BasePage
 
 
 class DashboardPage(BasePage):
+    """Класс для работы со страницей Dashboard."""
     CREATE_BOARD_BUTTON = (By.CSS_SELECTOR, '[data-qa="dashboard-create-board-button"]')
     IS_ADMIN = ("xpath", "//div[text()='Администратор']")
     ALL_BOARDS = ("xpath", "//p[text()='Всего досок']")
@@ -39,4 +40,3 @@ class DashboardPage(BasePage):
         boards_element = self.driver.find_element(*self.ALL_BOARDS_COUNT)
         boards_count = boards_element.text
         return int(boards_count)
-

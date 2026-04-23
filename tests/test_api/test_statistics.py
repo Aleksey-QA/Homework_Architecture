@@ -1,3 +1,4 @@
+"""Модуль с тестами для API статистики."""
 import allure
 import pytest
 
@@ -46,14 +47,15 @@ def test_get_global_task_stats(auth_service, statistics_service):
 
     # 5. Все числовые значения не должны быть отрицательными ? Почему нет?
     for field in ["boards", "tasks_total", "done"]:
-        assert data[field] >= 0, f"Ошибка: Поле {field} содержит отрицательное значение: {data[field]}"
+        assert data[field] >= 0, (f"Ошибка: Поле {field} содержит отрицательное "
+                                  f"значение: {data[field]}")
 
 
 @allure.step('Проверка активности существующего пользователя')
 def test_get_user_activity(auth_service, statistics_service):
     token = auth_service.get_token_for_me("admin@example.com", "admin123")
-    EXISTING_USER_ID = 1
-    response = statistics_service.get_user_activity(token, EXISTING_USER_ID)
+    existing_user_id  = 1
+    response = statistics_service.get_user_activity(token, existing_user_id )
     data = response.json()
 
     # 1. created_tasks для admin@example.com = 274
@@ -66,14 +68,11 @@ def test_get_user_activity(auth_service, statistics_service):
 @allure.step('Проверка активности несуществующего пользователя')
 def test_get_user_activity_negative(auth_service, statistics_service): #Почему нет?
     token = auth_service.get_token_for_me("admin@example.com", "admin123")
-    NONEXISTENT_USER_ID = 999  # ожидается, что такого пользователя нет
-    response = statistics_service.get_user_activity(token, NONEXISTENT_USER_ID)
+    nonexistent_user_id = 999  # ожидается, что такого пользователя нет
+    response = statistics_service.get_user_activity(token, nonexistent_user_id)
 
     data = response.json()
     # Несуществующий user_id: ожидаем 404 с полем "detail": "User not found"
     assert response.status_code == 404, "Status code is not 404"  #Почему нет?
-    assert data["detail"] == "User not found", f"Expected detail='User not found', got: {data['detail']}"
-
-
-
-
+    assert data["detail"] == "User not found", (f"Expected detail='User not found', "
+                                                f"got: {data['detail']}")

@@ -1,0 +1,16 @@
+ini
+
+[MASTER]
+# Добавить текущую директорию в путь поиска модулей
+init-hook='import sys; sys.path.append(".")'
+
+# Игнорировать ошибки относительных импортов
+disable=
+    C0114,  # missing-module-docstring
+    C0115,  # missing-class-docstring
+    C0116,  # missing-function-docstring
+    C0305,  # trailing-newlines
+    E0401   # import-error (если не хотите исправлять импорты)
+
+[REPORTS]
+fail-under=6

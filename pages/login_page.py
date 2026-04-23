@@ -7,7 +7,7 @@ from test_data.users import User
 
 
 class LoginPage(BasePage):
-
+    """Класс для работы со страницей авторизации."""
     LOGIN_INPUT = (By.ID, 'id-input-login-email-input')
     PASSWORD_INPUT = (By.CSS_SELECTOR, '[id="id-input-login-password-input"]')
     SUBMIT = (By.XPATH, '//*[@data-qa="login-submit-button"]')
@@ -37,4 +37,3 @@ class LoginPage(BasePage):
         self.wait_visible(self.LOG_OUT)
         self.driver.find_element(*self.LOG_OUT).click()
         self.wait_page_opened()
-
