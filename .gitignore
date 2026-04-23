@@ -18,6 +18,10 @@
 .idea/
 .flake8
 .gitignore
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
 
 #Allure_results
 allure_results
