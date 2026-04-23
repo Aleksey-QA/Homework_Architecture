@@ -60,4 +60,3 @@ class BasePage:
 
         assert self.url in self.driver.current_url, f"Expected: {self.url}, but {self.driver.current_url}"
         assert self.title == self.driver.title
-

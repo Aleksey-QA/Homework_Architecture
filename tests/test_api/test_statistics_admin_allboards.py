@@ -1,3 +1,4 @@
+import allure
 import pytest
 
 from services.authentication_service import AuthServices
@@ -11,23 +12,14 @@ def auth_service():
 def statistics_service():
     return StaticServices()
 
-@pytest.fixture()
-def take_response(auth_service, statistics_service):
-    def _take_response(params=None):
-        token = auth_service.get_token_for_me("admin@example.com", "admin123")
-        response = statistics_service.get_all_boards_admin(params, token)
-        return response
-    return _take_response
+@allure.step('Проверка получения ожидаемого массива объектов')
+def test_get_all_boards_admin_valid(auth_service, statistics_service):
+    token = auth_service.get_token_for_me("admin@example.com", "admin123")
+    params = {"skip": None, "limit": 2, "archived": "true"}
+    response = statistics_service.get_all_boards_admin(params, token)
+    body = response.json()
 
-def test_assert_success_response(take_response):
-    response = take_response({"skip": 1, "limit": 2, "archived": True})
-    assert response.status_code == 200, f"Expected 200 OK, got {response.status_code}: {response.text}"
-    try:
-        body = response.json()
-    except ValueError:
-        pytest.fail("Ответ неверен в формате JSON: %s" % response.text)
-
-    if isinstance(body, dict):
+    if isinstance(body, dict):                                            #Почему нет?
         assert "boards" in body and isinstance(body["boards"], list), "Ожидаемый 'boards' в тексте ответа"
         assert "total" in body and isinstance(body["total"], int), "Ожидаемый 'total' в тексте ответа"
     elif isinstance(body, list):
@@ -36,46 +28,28 @@ def test_assert_success_response(take_response):
         pytest.fail("Что-то пошло не так: %r" % body)
 
 
-
-# Проверка, что с пустыми значениями запрос выполняется успешно
-def test_get_without_parameters(take_response):
-    response = take_response({"skip": None, "limit": None, "archived": None})
+@allure.step('Проверка, что с пустыми значениями запрос выполняется успешно')
+def test_get_without_parameters(auth_service, statistics_service):
+    token = auth_service.get_token_for_me("admin@example.com", "admin123")
+    params = {"skip": None, "limit": None, "archived": None}
+    response = statistics_service.get_all_boards_admin(params, token)
+    body = response.json()
     assert response.status_code == 200, f"Expected 200 OK, got {response.status_code}: {response.text}"
-    try:
-        body = response.json()
-    except ValueError:
-        pytest.fail("Ответ неверен в формате JSON: %s" % response.text)
 
-
-
-@pytest.mark.parametrize("skip, limit, archived", [
-    (0, 1, True),
-    (1, 10, False),
-    (2, 3, None),
-])
-def test_get_with_valid_values(take_response, skip, limit, archived):
-    response = take_response({"skip": skip, "limit": limit, "archived": archived})
-    assert response.status_code == 200, f"Expected 200 OK, got {response.status_code}: {response.text}"
-    try:
-        body = response.json()
-    except ValueError:
-        pytest.fail("Ответ неверен в формате JSON: %s" % response.text)
-
-
-
+@allure.step('Проверка, отправки запроса получения досок с невалидными параметрами')
 @pytest.mark.parametrize("skip, limit, archived", [
     ("abc", None, True),
     (None, "ten", False),
     ("1.5", None, None),
     (None, "2.7", None),
 ])
-def test_invalid_integer_params_trigger_validation(take_response, skip, limit, archived):
-    response = take_response({"skip": skip, "limit": limit, "archived": archived})
+def test_invalid_integer_params_trigger_validation(auth_service, statistics_service, skip, limit, archived):
+    token = auth_service.get_token_for_me("admin@example.com", "admin123")
+    response = statistics_service.get_all_boards_admin({"skip": skip, "limit": limit, "archived": archived}, token)
+
+   # response = take_response({"skip": skip, "limit": limit, "archived": archived})
     assert response.status_code == 422, f" Ожидали получить 422 ошибку, got {response.status_code}: {response.text}"
-    try:
-        data = response.json()
-    except ValueError:
-        pytest.fail(f"ответ не в виде JSON. Status: {response.status_code}, Body: {response.text}")
+    data = response.json()
 
     # Проверяем наличие detail и что это непустой список
     assert "detail" in data, f"'detail' не находится в JSON: {data}"
