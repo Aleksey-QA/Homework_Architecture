@@ -25,7 +25,7 @@ def test_get_all_boards_admin_valid(auth_service, statistics_service):
     elif isinstance(body, list):
         assert all(isinstance(item, dict) for item in body), "Ожидаемый массив объектов board"
     else:
-        pytest.fail("Что-то пошло не так: %r" % body)
+        pytest.fail(f"Что-то пошло не так: {body}")
 
 
 @allure.step('Проверка, что с пустыми значениями запрос выполняется успешно')
@@ -59,6 +59,6 @@ def test_invalid_integer_params_trigger_validation(auth_service, statistics_serv
     print(data)
     for error in data["detail"]:
         actual_msg = error.get('msg')
-    expected_msg  = "Input should be a valid integer, unable to parse string as an integer"
-    assert actual_msg == expected_msg , (f" Параметр 'msg' не совпадает с ожидаемым: "
+    expected_msg = "Input should be a valid integer, unable to parse string as an integer"
+    assert actual_msg == expected_msg, (f" Параметр 'msg' не совпадает с ожидаемым: "
                                         f"Expected: '{expected_msg }', Actual: '{actual_msg}'")
