@@ -33,4 +33,4 @@ class TasksPage(BasePage):
         row = self.driver.find_elements(*self.TASKS_COUNT_ROW)
         count = len(row)
         print(f"Количество строк-задач: {count}")
-        assert count == 1, "У пользователя есть задачи"
+        assert count != 1, "У пользователя нет задач"

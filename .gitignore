@@ -1,0 +1,23 @@
+# created by virtualenv automatically
+
+# Исключения
+!core/
+!models/
+!pages/
+!services/
+!test_api/
+!test_data/
+!tests/
+
+
+# Virtual Environment
+.venv/
+
+
+# PyCharm
+.idea/
+.flake8
+.gitignore
+
+#Allure_results
+allure_results

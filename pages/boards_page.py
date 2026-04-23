@@ -9,6 +9,7 @@ class BoardsPage(BasePage):
     BOARDS_CREATE_BUTTON = ("xpath", "//button[@class='btn btn-primary btn-md']")
     BOARDS_TABLES = ("xpath", "//div/div/table/thead/tr/th[text()='Название']")
     BOARDS_COUNT_ROW = ("xpath", "//tbody/tr")
+    ALL_BOARDS_COUNT = ("xpath", "//h2[@class='admin-section-title']")
 
     def __init__(self, driver):
         self.driver: WebDriver = driver
@@ -29,6 +30,13 @@ class BoardsPage(BasePage):
         count = len(row)
         print(f"Количество строк-досок: {count}")
         assert count > 1, "У пользователя нет досок"
+
+    @allure.step("Получение количество досок на boards")
+    def get_boards_count(self):
+        boards_element = self.driver.find_element(*self.ALL_BOARDS_COUNT)
+        text = boards_element.text  # "Доски (13)"
+        number = text.split('(')[1].split(')')[0]  # "13"
+        return int(number)
 
 
 

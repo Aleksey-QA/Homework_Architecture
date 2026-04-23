@@ -2,13 +2,9 @@ import pytest
 
 from services.authentication_service import AuthServices
 
-
-@pytest.mark.parametrize("email, password",
-                         [("diana@example.com", "password123"), ],
-                         ids=["simple user"], )
-def test_login(email, password):
+def test_login():
     auth_service = AuthServices()
-    token = auth_service.get_token(email, password)
+    token = auth_service.get_token("diana@example.com", "password123")
 
     assert token
 

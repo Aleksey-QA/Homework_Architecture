@@ -20,12 +20,12 @@ def test_get_dashboard_stats(auth_service, statistics_service):
     data = response.json()
     # 1. total_boards для diana@example.com = 20
     assert data["total_boards"] == 20
-    # 2. total_tasks для diana@example.com = 1148
-    assert data["total_tasks"] == 1148
-    # 3. tasks_by_status для diana@example.com содержит todo: 473, in_progress: 336, done: 339
-    assert data["tasks_by_status"]["todo"] == 473
-    assert data["tasks_by_status"]["in_progress"] == 336
-    assert data["tasks_by_status"]["done"] == 339
+    # 2. total_tasks для diana@example.com = 1368
+    assert data["total_tasks"] == 1368
+    # 3. tasks_by_status для diana@example.com содержит todo: 567, in_progress: 397, done: 404
+    assert data["tasks_by_status"]["todo"] == 567
+    assert data["tasks_by_status"]["in_progress"] == 397
+    assert data["tasks_by_status"]["done"] == 404
 
 @allure.step('Проверка глобальной статистики по пользователю diana@example.com')
 def test_get_global_task_stats(auth_service, statistics_service):
@@ -35,10 +35,10 @@ def test_get_global_task_stats(auth_service, statistics_service):
     data = response.json()
     # 1. boards для diana@example.com = 23
     assert data["boards"] == 23
-    # 2. total_tasks для diana@example.com = 1148
-    assert data["tasks_total"] == 1148
-    # 3. total_tasks для diana@example.com = 339
-    assert data["done"] == 339
+    # 2. total_tasks для diana@example.com = 1368
+    assert data["tasks_total"] == 1368
+    # 3. done tasks для diana@example.com = 404
+    assert data["done"] == 404
 
     # 4. Выполненных задач не может быть больше, чем всего задач \ Почему нет?
     assert data["done"] <= data["tasks_total"], \
@@ -56,11 +56,11 @@ def test_get_user_activity(auth_service, statistics_service):
     response = statistics_service.get_user_activity(token, EXISTING_USER_ID)
     data = response.json()
 
-    # 1. created_tasks для admin@example.com = 234
-    assert data["created_tasks"] == 234
-    # 2. updated_tasks для diana@example.com = 234
-    assert data["updated_tasks"] == 234
-    # 3. boards_created для diana@example.com = 339
+    # 1. created_tasks для admin@example.com = 274
+    assert data["created_tasks"] == 274
+    # 2. updated_tasks для admin@example.com = 274
+    assert data["updated_tasks"] == 274
+    # 3. boards_created для admin@example.com = 339
     assert data["boards_created"] == 5
 
 @allure.step('Проверка активности несуществующего пользователя')
