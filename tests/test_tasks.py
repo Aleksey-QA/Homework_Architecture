@@ -18,7 +18,7 @@ def tasks_open_logged_in(driver):  #Метод открытия страницы
     tasks_page.assert_that_tasks_opened()
     return tasks_page
 
-@allure.sub_suite('Проверка наличия досок у пользователя')
+@allure.step('Проверка наличия досок у пользователя')
 def test_user_have_tasks(driver):
     tasks_page = tasks_open_logged_in(driver)
     tasks_page.assert_user_have_tasks()

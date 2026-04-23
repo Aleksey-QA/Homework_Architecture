@@ -7,7 +7,7 @@ from pages.dashboard_page import DashboardPage
 from pages.login_page import LoginPage
 from test_data.users import ADMIN, DIANA
 
-@allure.sub_suite('Проверка отображения Dashboard страницы')
+@allure.step('Проверка отображения Dashboard страницы')
 def test_login(driver):
     login_page = LoginPage(driver)
     login_page.open()
