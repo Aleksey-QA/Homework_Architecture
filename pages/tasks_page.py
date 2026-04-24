@@ -1,8 +1,13 @@
+import time
+
 import allure
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 
 from pages.base_page import BasePage
+from pages.login_page import LoginPage
+from test_data.users import ADMIN
+
 
 class TasksPage(BasePage):
     """Класс для работы со страницей задач."""
@@ -30,3 +35,14 @@ class TasksPage(BasePage):
         count = len(row)
         print(f"Количество строк-задач: {count}")
         assert count != 1, "У пользователя нет задач"
+
+    @allure.step('Открытие страницы tasks после авторизации')
+    def tasks_open_logged_in(self, driver):
+        login_page = LoginPage(driver)
+        login_page.open()
+        login_page.login(ADMIN)
+        time.sleep(1)
+        tasks_page = TasksPage(driver)
+        tasks_page.open()
+        tasks_page.assert_that_tasks_opened()
+        return tasks_page

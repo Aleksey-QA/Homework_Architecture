@@ -1,4 +1,3 @@
-import time
 import allure
 
 from pages.admin_page import AdminPage
@@ -16,13 +15,13 @@ def admin_open_logged_in(driver):  #Метод открытия страницы
     admin_page.assert_that_admin_opened()
     return admin_page
 
-@allure.step('Проверка на отображение Admin страницы') #не отображается в allure
+@allure.step('Проверка на отображение Admin страницы')
 def test_admin_opened(driver):
     admin_page = admin_open_logged_in(driver)
     admin_page.assert_that_admin_opened()
 
 @allure.step('Проверка на отображение зарегистрированных пользователей')
-def test_admin_opened(driver):
+def test_displaying_registered_users(driver):
     admin_page = admin_open_logged_in(driver)
     admin_page.assert_that_admin_opened()
     admin_page.assert_admin_reg_user()
@@ -43,6 +42,3 @@ def test_admin_log_out(driver):
     login_page.log_out()
     login_page.login(DIANA)
     admin_page.assert_noadmin_noaccess()
-
-
-

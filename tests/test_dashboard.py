@@ -1,5 +1,3 @@
-import time
-
 import allure
 
 from pages.boards_page import BoardsPage
@@ -34,5 +32,5 @@ def test_count_boards_on_dashboard_board(driver):
     boards_page.assert_that_boards_opened()
     boards_count = boards_page.get_boards_count()
 
-    assert dashboard_count_boards == boards_count, f"Количество досок на //Dashboard {dashboard_count_boards}, а на //Boards {boards_count}"
-
+    assert dashboard_count_boards == boards_count, \
+        f"Количество досок на //Dashboard {dashboard_count_boards}, а на //Boards {boards_count}"
