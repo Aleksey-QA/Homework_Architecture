@@ -16,6 +16,7 @@ def test__user_has_boards(driver):
     board_page.board_open_logged_in(driver)
     board_page.assert_test_user_have_board()
 @allure.step('Проверка создания новой доски')
+@pytest.mark.my_marker2
 def test_create_new_board(driver):
     board_page = BoardsPage(driver)
     board_page.board_open_logged_in(driver)
@@ -69,7 +70,7 @@ def test_open_board(driver):
     assert len(rows) > 0, "Нет досок для проверки"
     first_board_name = rows[0].text.split('\n')[0]
 
-    # Кликаем по первой доске
+    # Кликаем Открыть по первой доске
     board_for_open = board_page.driver.find_elements(*board_page.BOARDS_OPEN)
     board_for_open[0].click()
     #Запоминаем название открытой доски
@@ -80,32 +81,23 @@ def test_open_board(driver):
     # Проверяем, что открылась именно та доска, которую открывали)
     assert first_board_name == main_board_name, f"Открылась не та доска {main_board_name}"
 
-# @allure.step('Проверка удаления доски')
-# @pytest.mark.skip(reason="Осторожно: удаляет данные. Раскомментировать при необходимости")
-# @pytest.mark.my_marker
-# def test_delete_board(driver):
-#     """Проверка: удаление доски."""
-#     board_page = BoardsPage(driver)
-#     board_page.board_open_logged_in(driver)
-#
-#     # Получаем количество досок до удаления
-#     initial_count = board_page.get_boards_count()
-#
-#     # Находим кнопку удаления для первой доски
-#     # delete_button = driver.find_element(By.XPATH, "//tbody/tr[1]//button[@data-qa='delete-board']")
-#     # delete_button.click()
-#
-#     # Подтверждаем удаление
-#     # confirm_button = driver.find_element(By.XPATH, "//button[@data-qa='confirm-delete']")
-#     # confirm_button.click()
-#
-#     # Ждём обновления
-#     time.sleep(1)
-#
-#     # Проверяем, что количество уменьшилось
-#     new_count = board_page.get_boards_count()
-#     assert new_count == initial_count - 1, \
-#         f"Количество досок не уменьшилось: было {initial_count}, стало {new_count}"
+@allure.step('Проверка удаления доски')
+@pytest.mark.my_marker
+def test_delete_board(driver):
+    board_page = BoardsPage(driver)
+    board_page.board_open_logged_in(driver)
+
+    # Получаем количество досок до удаления
+    initial_count = board_page.get_boards_count()
+
+    #Открываем последнюю доску и удаляем
+    board_page.open_last_board()
+    board_page.delete_board()
+
+    # Проверяем, что количество досок уменьшилось
+    new_count = board_page.get_boards_count()
+    assert new_count == initial_count - 1, \
+        f"Количество досок не уменьшилось: было {initial_count}, стало {new_count}"
 
 #
 # @allure.step('Проверка фильтрации публичных досок')

@@ -18,12 +18,16 @@ class BoardsPage(BasePage):
     BOARDS_TABLES = ("xpath", "//div/div/table/thead/tr/th[text()='Название']")
     BOARDS_COUNT_ROW = ("xpath", "//tbody/tr")
     BOARDS_OPEN = ("xpath", "//tbody/tr/td[7]")
+    BOARDS_TO_OPEN = ("xpath", "//a[contains(text(), 'Открыть')]")
     BOARDS_OPEN_NEW_MAIN_NAME = ("xpath", "//h1[@data-qa='board-title']")
     ALL_BOARDS_COUNT = ("xpath", "//h2[@class='admin-section-title']")
     CREATE_BOARD_TITLE_INPUT = ("xpath", "//input[@id='id-input-create-board-title-input']")
     CREATE_BOARD_PUBLIC_CHECKBOX = ("xpath", "//input[@data-qa='create-board-public-checkbox']")
     CREATE_BOARD_SUBMIT_BUTTON = ("xpath", "//button[@data-qa='create-board-submit-button']")
     SEARCH_INPUT = ("xpath", "//input[@id='id-input-boards-search-input']")
+    PAGE_NUMBER_LAST = ("xpath", "//button[@class='btn btn-outline btn-sm min-w-[36px]'][last()]")
+    DELETE_BOARD = ("xpath", "//button[@data-qa='board-delete-button']")
+    DELETE_MODAL_BUTTON = ("xpath", "//button[@data-qa='delete-board-confirm-button']")
 
     def __init__(self, driver):
         self.driver: WebDriver = driver
@@ -107,3 +111,31 @@ class BoardsPage(BasePage):
     @allure.step('Получение списка досок после фильтрации')
     def get_filtered_boards(self):
         return self.driver.find_elements(*self.BOARDS_COUNT_ROW)
+
+    @allure.step('Переход на последнию страницу списка досок')
+    def going_to_last_page(self):
+        last_page = self.wait.until(
+            EC.element_to_be_clickable(self.PAGE_NUMBER_LAST)
+        )
+        #немного проскроллили
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", last_page)
+        time.sleep(0.5)
+        clickable_page = self.wait.until(EC.element_to_be_clickable(self.PAGE_NUMBER_LAST))
+        # Пробуем кликнуть обычным способом, если не получится — JS
+        try:
+            clickable_page.click()
+        except Exception:
+            self.driver.execute_script("arguments[0].click();", clickable_page)
+        time.sleep(0.5)
+
+    @allure.step('Открытие первой доски в списке')
+    def open_last_board(self):
+        self.going_to_last_page()
+        open_board = self.driver.find_elements(*self.BOARDS_TO_OPEN)
+        open_board[-1].click()
+        time.sleep(0.5)
+
+    @allure.step('Открытие первой доски в списке')
+    def delete_board(self):
+        self.driver.find_element(*self.DELETE_BOARD).click()
+        self.wait.until(EC.element_to_be_clickable(self.DELETE_MODAL_BUTTON)).click()
