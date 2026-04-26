@@ -14,14 +14,10 @@ class LoginPage(BasePage):
 
     LOG_OUT = (By.XPATH, "//button[@data-qa='header-logout-button']")
 
-
-
     def __init__(self, driver):
         self.driver: WebDriver = driver
         self.url = '/login'
         super().__init__(driver, self.url)
-
-
 
     def open(self):
         self.driver.get(f"{BaseConfig.ROOT_PATH}{self.url}")

@@ -1,7 +1,6 @@
 import time
 
 import allure
-import pytest
 
 from pages.boards_page import BoardsPage
 
@@ -16,7 +15,6 @@ def test__user_has_boards(driver):
     board_page.board_open_logged_in(driver)
     board_page.assert_test_user_have_board()
 @allure.step('Проверка создания новой доски')
-@pytest.mark.my_marker2
 def test_create_new_board(driver):
     board_page = BoardsPage(driver)
     board_page.board_open_logged_in(driver)
@@ -45,8 +43,8 @@ def test_search_board(driver):
     # Получаем название первой доски из таблицы
     rows_before = board_page.driver.find_elements(*board_page.BOARDS_COUNT_ROW)
     assert len(rows_before) > 0, "Нет досок для теста"
-
-    first_board_name = rows_before[0].text.split('\n')[0] #из всего списка выбираем только первое - название доски
+    #из всего списка выбираем только первое - название доски
+    first_board_name = rows_before[0].text.split('\n')[0]
 
     # Выполняем поиск
     board_page.search_board(first_board_name)
@@ -82,7 +80,6 @@ def test_open_board(driver):
     assert first_board_name == main_board_name, f"Открылась не та доска {main_board_name}"
 
 @allure.step('Проверка удаления доски')
-@pytest.mark.my_marker
 def test_delete_board(driver):
     board_page = BoardsPage(driver)
     board_page.board_open_logged_in(driver)
@@ -99,43 +96,23 @@ def test_delete_board(driver):
     assert new_count == initial_count - 1, \
         f"Количество досок не уменьшилось: было {initial_count}, стало {new_count}"
 
-#
-# @allure.step('Проверка фильтрации публичных досок')
-# def test_filter_public_boards(driver):
-#     """Проверка: фильтр 'Только публичные доски' работает."""
-#     board_page = BoardsPage(driver)
-#     board_page.board_open_logged_in(driver)
-#
-#     # Получаем все доски
-#     all_boards = board_page.driver.find_elements(*board_page.BOARDS_COUNT_ROW)
-#     all_count = len(all_boards)
-#
-#     # Включаем фильтр публичных досок
-#     # board_page.checkbox_only_public_boards.check()
-#
-#     # Ждём обновления
-#     time.sleep(1)
-#
-#     # Получаем отфильтрованные доски
-#     filtered_boards = board_page.driver.find_elements(*board_page.BOARDS_COUNT_ROW)
-#     filtered_count = len(filtered_boards)
-#
-#     # Проверяем, что фильтр работает (количество уменьшилось или осталось)
-#     assert filtered_count <= all_count, \
-#         f"После фильтрации стало больше досок: было {all_count}, стало {filtered_count}"
-#
-#
-# @allure.step('Проверка количества досок на странице администрирования')
-# def test_admin_boards_count(driver):
-#     """Проверка: отображение количества досок в админской панели."""
-#     board_page = BoardsPage(driver)
-#     board_page.board_open_logged_in(driver)
-#
-#     # Получаем количество из заголовка
-#     count = board_page.get_boards_count()
-#
-#     # Проверяем, что количество - положительное число
-#     assert isinstance(count, int), f"Количество не является числом: {count}"
-#     assert count >= 0, f"Количество не может быть отрицательным: {count}"
-#
-#     print(f"📊 Количество досок: {count}")
+
+@allure.step('Проверка фильтрации публичных досок')
+def test_filter_public_boards(driver):
+    board_page = BoardsPage(driver)
+    board_page.board_open_logged_in(driver)
+
+    # Получаем все доски
+    all_boards = board_page.driver.find_elements(*board_page.BOARDS_COUNT_ROW)
+    all_count = len(all_boards)
+
+    # Включаем фильтр публичных досок
+    board_page.enable_only_public_filter()
+
+    # Получаем отфильтрованные доски
+    filtered_boards = board_page.driver.find_elements(*board_page.BOARDS_COUNT_ROW)
+    filtered_count = len(filtered_boards)
+
+    # Проверяем, что фильтр работает (количество уменьшилось или осталось)
+    assert filtered_count <= all_count, \
+        f"После фильтрации стало больше досок: было {all_count}, стало {filtered_count}"

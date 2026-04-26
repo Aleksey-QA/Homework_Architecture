@@ -61,3 +61,8 @@ class BasePage:
         assert self.url in self.driver.current_url, (f"Expected: {self.url}, "
                                                      f"but {self.driver.current_url}")
         assert self.title == self.driver.title
+
+    @allure.step("Обновление страницы")
+    def refresh_page(self):
+        self.driver.refresh()
+        self.wait_page_opened()

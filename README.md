@@ -47,9 +47,11 @@ pytest tests/test_api/test_statistics.py -v -s --cache-clear --tb=short  # пр�
 
 ```
 ## Allure
-
+Для запуска автотестов с сохранением результатов необходимо выполнить команду:
+```bash
+pytest --alluredir=allure-results
+```
 Результаты прохождения автотестов записываются в каталог allure-results.
-
 Для просмотра отчёта выполнить команду:
 
 ```bash

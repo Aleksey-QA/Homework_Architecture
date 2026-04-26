@@ -21,8 +21,10 @@ def test_assert_success_response(auth_service, statistics_service):
     body = response.json()
 
     if isinstance(body, dict):
-        assert "tasks" in body and isinstance(body["tasks"], list), "Ожидаемый 'tasks' отсутствует в тексте ответа"
-        assert "total" in body and isinstance(body["total"], int), "Ожидаемый 'total' отсутствует в тексте ответа"
+        assert "tasks" in body and isinstance(body["tasks"], list), \
+            "Ожидаемый 'tasks' отсутствует в тексте ответа"
+        assert "total" in body and isinstance(body["total"], int), \
+            "Ожидаемый 'total' отсутствует в тексте ответа"
     elif isinstance(body, list):
         assert all(isinstance(item, dict) for item in body), "Ожидаемый массив объектов tasks"
     else:
@@ -37,8 +39,10 @@ def test_get_without_parameters(auth_service, statistics_service):
     body = response.json()
 
     if isinstance(body, dict):
-        assert "tasks" in body and isinstance(body["tasks"], list), "Ожидаемый 'tasks' отсутствует в тексте ответа"
-        assert "total" in body and isinstance(body["total"], int), "Ожидаемый 'total' отсутствует в тексте ответа"
+        assert "tasks" in body and isinstance(body["tasks"], list), \
+            "Ожидаемый 'tasks' отсутствует в тексте ответа"
+        assert "total" in body and isinstance(body["total"], int), \
+            "Ожидаемый 'total' отсутствует в тексте ответа"
     else:
         pytest.fail(f"Что-то пошло не так: {body}")
 
@@ -50,7 +54,8 @@ def test_all_tasks_filter_status_in_progress(auth_service, statistics_service):
     body_all_status = response.json()
     # Подсчет задач со статусом "in_progress" без фильтров
     tasks = body_all_status["tasks"]
-    in_progress_count = len([task for task in tasks if task["status"] == "in_progress"]) #кол-во тасок "in_progress" без фильтра
+    #кол-во тасок "in_progress" без фильтра
+    in_progress_count = len([task for task in tasks if task["status"] == "in_progress"])
 
     # Подсчет задач со статусом "in_progress" c вкл фильтром
     response_filter = statistics_service.get_all_tasks_admin(
@@ -59,7 +64,8 @@ def test_all_tasks_filter_status_in_progress(auth_service, statistics_service):
     tasks_filter = body_filter_status["tasks"]
     filter_in_progress_count = len(tasks_filter) #кол-во тасок "in_progress" c включенным фильтром
 
-    assert in_progress_count == filter_in_progress_count, "Фильтрация по статусу in_progress работает неправильно"
+    assert in_progress_count == filter_in_progress_count, \
+        "Фильтрация по статусу in_progress работает неправильно"
 
 
 @allure.step('Проверка, что с фильтрация по статусу "todo" отрабатывают корректно')
@@ -70,7 +76,7 @@ def test_all_tasks_filter_status_todo(auth_service, statistics_service):
     body_all_status = response.json()
     # Подсчет задач со статусом "todo" без фильтров
     tasks = body_all_status["tasks"]
-    in_progress_count = len([task for task in tasks if task["status"] == "todo"]) #кол-во тасок "todo" без фильтра
+    in_progress_count = len([task for task in tasks if task["status"] == "todo"]) #кол-во тасок "_todo" без фильтра
 
     # Подсчет задач со статусом "todo" c вкл фильтром
     response_filter = statistics_service.get_all_tasks_admin(
@@ -79,7 +85,8 @@ def test_all_tasks_filter_status_todo(auth_service, statistics_service):
     tasks_filter = body_filter_status["tasks"]
     filter_in_progress_count = len(tasks_filter) #кол-во тасок "todo" c включенным фильтром
 
-    assert in_progress_count == filter_in_progress_count, "Фильтрация по статусу todo работает неправильно"
+    assert in_progress_count == filter_in_progress_count, \
+        "Фильтрация по статусу todo работает неправильно"
 
 
 @allure.step('Проверка, что с фильтрация по статусу "done" отрабатывают корректно')
@@ -90,7 +97,8 @@ def test_all_tasks_filter_status_done(auth_service, statistics_service):
     body_all_status = response.json()
     # Подсчет задач со статусом "done" без фильтров
     tasks = body_all_status["tasks"]
-    in_progress_count = len([task for task in tasks if task["status"] == "done"]) #кол-во тасок "done" без фильтра
+    #кол-во тасок "done" без фильтра
+    in_progress_count = len([task for task in tasks if task["status"] == "done"])
 
     # Подсчет задач со статусом "done" c вкл фильтром
     response_filter = statistics_service.get_all_tasks_admin(
@@ -99,7 +107,8 @@ def test_all_tasks_filter_status_done(auth_service, statistics_service):
     tasks_filter = body_filter_status["tasks"]
     filter_in_progress_count = len(tasks_filter) #кол-во тасок "done" c включенным фильтром
 
-    assert in_progress_count == filter_in_progress_count, "Фильтрация по статусу done работает неправильно"
+    assert in_progress_count == filter_in_progress_count, \
+        "Фильтрация по статусу done работает неправильно"
 
 @allure.step('Проверка, что с фильтрация по приоритету "low" отрабатывают корректно')
 def test_all_tasks_filter_priority_low(auth_service, statistics_service):
@@ -120,7 +129,8 @@ def test_all_tasks_filter_priority_low(auth_service, statistics_service):
     tasks_filter = body_filter_status["tasks"]
     filter_in_progress_count = len(tasks_filter)  # кол-во тасок "low" c включенным фильтром
 
-    assert in_progress_count == filter_in_progress_count, "Фильтрация по приоритету low работает неправильно"
+    assert in_progress_count == filter_in_progress_count, \
+        "Фильтрация по приоритету low работает неправильно"
 
 @allure.step('Проверка, что с фильтрация по приоритету "medium" отрабатывают корректно')
 def test_all_tasks_filter_priority_medium(auth_service, statistics_service):
@@ -130,7 +140,8 @@ def test_all_tasks_filter_priority_medium(auth_service, statistics_service):
     body_all_status = response.json()
     # Подсчет задач с приоритетом "medium" без фильтров
     tasks = body_all_status["tasks"]
-    in_progress_count = len([task for task in tasks if task["priority"] == "medium"]) #кол-во тасок "medium" без фильтра
+    #кол-во тасок "medium" без фильтра
+    in_progress_count = len([task for task in tasks if task["priority"] == "medium"])
 
     # Подсчет задач с приоритетом "medium" c вкл фильтром
     response_filter = statistics_service.get_all_tasks_admin(
@@ -139,7 +150,8 @@ def test_all_tasks_filter_priority_medium(auth_service, statistics_service):
     tasks_filter = body_filter_status["tasks"]
     filter_in_progress_count = len(tasks_filter) #кол-во тасок "medium" c включенным фильтром
 
-    assert in_progress_count == filter_in_progress_count, "Фильтрация по приоритету done работает неправильно"
+    assert in_progress_count == filter_in_progress_count, \
+        "Фильтрация по приоритету done работает неправильно"
 
 
 @allure.step('Проверка, что с фильтрация по приоритету "high" отрабатывают корректно')
@@ -161,7 +173,8 @@ def test_all_tasks_filter_priority_high(auth_service, statistics_service):
     tasks_filter = body_filter_status["tasks"]
     filter_in_progress_count = len(tasks_filter)  # кол-во тасок "high" c включенным фильтром
 
-    assert in_progress_count == filter_in_progress_count, "Фильтрация по приоритету high работает неправильно"
+    assert in_progress_count == filter_in_progress_count, \
+        "Фильтрация по приоритету high работает неправильно"
 
 
 @allure.step('Проверка отработки запроса get_all_tasks_admin с невалидными значениями')
@@ -171,7 +184,8 @@ def test_all_tasks_filter_priority_high(auth_service, statistics_service):
     ("1.5", None, None, None),
     (None, "2.7", "None", None)
 ])
-def test_invalid_integer_params_trigger_validation(auth_service, statistics_service, skip, limit, status, priority):
+def test_invalid_integer_params_trigger_validation(auth_service, statistics_service, skip,
+                                                   limit, status, priority):
     token = auth_service.get_token_for_me("admin@example.com", "admin123")
     response = statistics_service.get_all_tasks_admin(
         {"skip": skip, "limit": limit, "status": status, "priority": priority}, token)
@@ -180,7 +194,8 @@ def test_invalid_integer_params_trigger_validation(auth_service, statistics_serv
     # Проверяем наличие detail и что это непустой список
     assert "detail" in data, f"'detail' не находится в JSON: {data}"
     assert isinstance(data["detail"], list) and len(
-        data["detail"]) > 0, f"'detail' должен быть не пустой список, получили: {data.get('detail')}"
+        data["detail"]) > 0, (f"'detail' должен быть не пустой список, "
+                              f"получили: {data.get('detail')}")
 
     # Проверяем наличие поля msg и точное соответствие ожидаемой строки
     print(data)

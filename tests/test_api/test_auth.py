@@ -1,3 +1,4 @@
+"""Модуль авторизации."""
 from services.authentication_service import AuthServices
 
 def test_login():

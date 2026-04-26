@@ -1,9 +1,10 @@
-#from telnetlib import EC
+import time
 
 import allure
-import time
-from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
+
+from selenium.common import ElementClickInterceptedException
+from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.base_page import BasePage
@@ -14,6 +15,7 @@ from test_data.users import ADMIN
 class BoardsPage(BasePage):
     """Класс для работы со страницей управления досками."""
     BOARDS_H1 = (By.CSS_SELECTOR, '[data-qa="boards-page-title"]')
+    BOARDS_TITLE = ("xpath", "//h1[@data-qa='board-title']")
     BOARDS_CREATE_BUTTON = ("xpath", "//button[@class='btn btn-primary btn-md']")
     BOARDS_TABLES = ("xpath", "//div/div/table/thead/tr/th[text()='Название']")
     BOARDS_COUNT_ROW = ("xpath", "//tbody/tr")
@@ -28,6 +30,7 @@ class BoardsPage(BasePage):
     PAGE_NUMBER_LAST = ("xpath", "//button[@class='btn btn-outline btn-sm min-w-[36px]'][last()]")
     DELETE_BOARD = ("xpath", "//button[@data-qa='board-delete-button']")
     DELETE_MODAL_BUTTON = ("xpath", "//button[@data-qa='delete-board-confirm-button']")
+    CHECKBOX_ONLY_PUBLIC = ("xpath", "//input[@data-qa='boards-public-only-checkbox']")
 
     def __init__(self, driver):
         self.driver: WebDriver = driver
@@ -51,15 +54,11 @@ class BoardsPage(BasePage):
 
     @allure.step("Получение количество досок на boards")
     def get_boards_count(self):
+        self.wait.until(EC.element_to_be_clickable(self.ALL_BOARDS_COUNT))
         boards_element = self.driver.find_element(*self.ALL_BOARDS_COUNT)
         text = boards_element.text  # "Доски (13)"
         number = text.split('(')[1].split(')')[0]  # "13"
         return int(number)
-
-    @allure.step("Обновление страницы boards")
-    def refresh_page(self):
-        self.driver.refresh()
-        self.assert_that_boards_opened()
 
     @allure.step('Открытие страницы board после авторизации')
     def board_open_logged_in(self, driver):
@@ -73,7 +72,7 @@ class BoardsPage(BasePage):
         return board_page
 
     @allure.step('Создание новой доски с названием {board_title}')
-    def create_board(self, board_title: str, is_public: bool = True): #True - публичная, False - приватная
+    def create_board(self, board_title: str, is_public: bool = True):  # True - публ, False - приват
         self.click(self.BOARDS_CREATE_BUTTON)
 
         # Вводим название доски
@@ -106,7 +105,6 @@ class BoardsPage(BasePage):
         )
         search_input.clear()
         search_input.send_keys(board_name)
-        time.sleep(1)
 
     @allure.step('Получение списка досок после фильтрации')
     def get_filtered_boards(self):
@@ -117,25 +115,40 @@ class BoardsPage(BasePage):
         last_page = self.wait.until(
             EC.element_to_be_clickable(self.PAGE_NUMBER_LAST)
         )
-        #немного проскроллили
+        # немного проскроллили
         self.driver.execute_script("arguments[0].scrollIntoView(true);", last_page)
-        time.sleep(0.5)
         clickable_page = self.wait.until(EC.element_to_be_clickable(self.PAGE_NUMBER_LAST))
         # Пробуем кликнуть обычным способом, если не получится — JS
         try:
             clickable_page.click()
-        except Exception:
+        except ElementClickInterceptedException:
             self.driver.execute_script("arguments[0].click();", clickable_page)
-        time.sleep(0.5)
 
-    @allure.step('Открытие первой доски в списке')
+    @allure.step('Открытие последней доски в списке')
     def open_last_board(self):
         self.going_to_last_page()
+        self.wait_visible(self.BOARDS_TO_OPEN)
         open_board = self.driver.find_elements(*self.BOARDS_TO_OPEN)
         open_board[-1].click()
-        time.sleep(0.5)
+    @allure.step('Открытие n-досок в списке')
+    def open_n_board(self, n):
+        self.wait_visible(self.BOARDS_TO_OPEN)
+        for i in range(1, n+1):
+            self.open()
+            self.wait_visible(self.BOARDS_TO_OPEN)
+            open_board = self.driver.find_elements(*self.BOARDS_TO_OPEN)
+            open_board[i].click()
+            self.wait_visible(self.BOARDS_TITLE)
+            #time.sleep(0.5)
 
-    @allure.step('Открытие первой доски в списке')
+    @allure.step('Удаление открытой доски')
     def delete_board(self):
+        self.wait.until(EC.element_to_be_clickable(self.DELETE_BOARD))
         self.driver.find_element(*self.DELETE_BOARD).click()
         self.wait.until(EC.element_to_be_clickable(self.DELETE_MODAL_BUTTON)).click()
+
+    @allure.step('Включить фильтр только публичных досок')
+    def enable_only_public_filter(self):
+        checkbox = self.wait.until(EC.element_to_be_clickable(self.CHECKBOX_ONLY_PUBLIC))
+        if not checkbox.is_selected():
+            checkbox.click()
